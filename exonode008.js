@@ -6,13 +6,19 @@ app.use(express.urlencoded({
 }));
 
 app.get('/', function(req, res) {
-    console.log(req.body);
+    console.log(req);
     res.send('slash');
 });
 
 app.get('/about', function(req, res) {
-    console.log(req.body);
+    console.log(req.params);
     res.send('about');
+});
+
+app.get('/animal/:id', function(req, res) {  //":id" syntaxe pour paramètre
+    console.log(req.params);
+    //res.send('<h1>animal' + req.params.id + '</h1>');
+    res.send(`<h1>animal : ${req.params.id} </h1>`); //attention, il faut OBLIGATOIREMENT mettre entre back accolade
 });
 
 app.listen(8081, function() {
