@@ -1,0 +1,32 @@
+<html lang="en">
+<head>
+    <%- include('partials/head'); %>
+</head>
+<body class = "container">
+
+    <header>
+        <%- include ('partials/header'); %>
+    </header>
+    
+    <main>
+        <div class ="jumbotron">
+            <h1><%= titre %></h1>
+
+        </div>
+
+        <form action = "add_article" method="post">
+            Nom
+            <input type = "text" id="nom" name ="nom">
+            Description
+            <input type = "text" id="description" name ="description">
+            Quantité
+            <input type = "text" id="quantite" name ="quantite">
+            <input type = "submit" value = "Valider">
+        </form>
+    </main>
+
+    <footer>
+        <%- include('partials/footer'); %>
+    </footer>
+</body>
+</html>

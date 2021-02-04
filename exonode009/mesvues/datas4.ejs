@@ -17,8 +17,11 @@
            <% if (locals.articles ) { %>
 
                 <% articles.forEach(function(article) { %>
-
-                    <p> Nom : <%= article.nom %> Description : <%= article.description %> Quantité : <%= article.quantite %></p>
+                    
+                    <p> <a href ="/afficheOne/<%=article.id%>"><%=article.id%> </a>
+                        Nom : <%= article.nom %> 
+                        Description : <%= article.description %> 
+                        Quantité : <%= article.quantite %></p>
                 
                 <% }) %>
 

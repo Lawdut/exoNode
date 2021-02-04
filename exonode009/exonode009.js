@@ -12,6 +12,10 @@ const jsonfile = require('jsonfile');
 
 const bdd = require('./modele/controllerpool.js')
 
+app.use(function(req, res, next) {
+    console.log('une requête a été effectué a cette heure', Date.now());
+    next();
+});
 
 app.use(express.urlencoded({ extented :true})); //permet de traiter les URL entrantes --- pour accepter les form
 
@@ -44,13 +48,38 @@ app.get('/datas2/:param1/:param2', function(req, res) {
 app.get('/datas2', function (req, res) {
     let donnees=jsonfile.readFileSync('modele/datas.json');
     res.render('datas2', donnees)
+});
+
+//appel de bdd.getAll sur la table article pour récupérer tous les Articles
+
+app.get('/datas4', function (req, res) { //voir la fonction CallBack dans controllerpool.js
+    bdd.getAll("articles", function (article) {
+        res.render('datas4', {articles : article});
+    })
+});
+
+//création d'un formulaire sur 1 seul article
+app.get('/form_article', function(req,res) {
+    res.render('form', { titre : "articles" });
+});
+
+app.post('/add_article', function (req, res){
+    bdd.create('articles', req.body, function(){
+        res.redirect('/datas4')
+    })
+});
+
+//fonction de modification d'un article
+app.get('/afficheOne/:id', function (req,res){
+        res.render('afficheOne', {id : req.params.id});
 })
 
-app.get('/datas4', function (req, res) {
-    bdd.getAll("articles", function (articles) {
-        res.render('datas4', {articles : articles});
+app.post('/modif/:id', function (req,res){
+    bdd.modif('articles',req.params.id, req.body, function(){
+        res.redirect('/datas4')
     })
 })
+
 
 app.listen(8081);
 console.log('le serveur écoute le port : 8081');

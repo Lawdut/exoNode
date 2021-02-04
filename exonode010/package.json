@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-mysql-session": "^2.1.5",
+    "express-session": "^1.17.1",
+    "fs": "^0.0.1-security",
+    "jsonfile": "^6.1.0",
+    "mysql2": "^2.2.5"
+  }
+}
