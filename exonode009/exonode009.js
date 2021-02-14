@@ -2,6 +2,7 @@
 
 const express = require('express'); //=> consulter le site EXPRESS
 const app = express();
+const cors = require('cors');
 
 const fs = require('fs');
 
@@ -11,6 +12,10 @@ const ejs = require('ejs'); //template ejs; il en existe plein d'autres. L'exten
 const jsonfile = require('jsonfile');
 
 const bdd = require('./modele/controllerpool.js')
+
+app.use(cors());
+
+app.use(express.json());
 
 app.use(function(req, res, next) {
     console.log('une requête a été effectué a cette heure', Date.now());
@@ -80,6 +85,10 @@ app.post('/modif/:id', function (req,res){
     })
 })
 
-
+app.get('/datajson', function (req,res) {
+    bdd.getAll('articles', function(articles) {
+        res.json({ articles: articles});
+    })
+})
 app.listen(8081);
 console.log('le serveur écoute le port : 8081');
