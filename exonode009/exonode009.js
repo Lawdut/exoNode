@@ -3,25 +3,38 @@
 const express = require('express'); //=> consulter le site EXPRESS
 const app = express();
 const cors = require('cors');
-
 const fs = require('fs');
-
-
 const ejs = require('ejs'); //template ejs; il en existe plein d'autres. L'extension du fichier doit être .ejs et doit être du format html.
-
 const jsonfile = require('jsonfile');
-
 const bdd = require('./modele/controllerpool.js')
+const bcrypt = require('bcryptjs');
+const salt = bcrypt.genSaltSync(10);
+const session = require('express-session');
+const mysqlStore = require('express-mysql-session')(session);
+var users = [];
+const options = {
+	host: 'localhost',
+	port: 3306,
+	user: 'root',
+	password: '',
+	database: 'articles'
+};
 
+const sessionStore = new mysqlStore(options);
+
+app.use(session({
+	secret: "du sel",
+    store: sessionStore,
+    proxy: true,
+	resave: true,
+	saveUninitialized: true
+}));
 app.use(cors());
-
 app.use(express.json());
-
 app.use(function(req, res, next) {
     console.log('une requête a été effectué a cette heure', Date.now());
     next();
 });
-
 app.use(express.urlencoded({ extented :true})); //permet de traiter les URL entrantes --- pour accepter les form
 
 
@@ -74,6 +87,12 @@ app.post('/add_article', function (req, res){
     })
 });
 
+app.post('/add_unArticle', function (req, res){
+    bdd.create('articles', req.body, function(){
+        res.json({res :'hey' })
+    })
+});
+
 //fonction de modification d'un article
 app.get('/afficheOne/:id', function (req,res){
         res.render('afficheOne', {id : req.params.id});
@@ -90,5 +109,28 @@ app.get('/datajson', function (req,res) {
         res.json({ articles: articles});
     })
 })
+
+
+//LOGIN ET ENREGISTREMENT
+app.get('/connexion/:nom/:mdp', function (req, res) {
+    bdd.connexion('user', req.params, function (user) {
+    isValidPass = bcrypt.compareSync(req.params.mdp, user.mdp);
+    if(isValidPass === true) {
+        res.json({res : "true"})
+    }
+    else {
+        res.json({res : "false"})
+    }
+    })
+})
+
+app.post('/login', function(req, res) {
+bdd.enregistrer('user', req.body, function() {
+    res.json({res : "Enregistré"})
+})
+})
+
+
 app.listen(8081);
 console.log('le serveur écoute le port : 8081');
+

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.20.0/dist/axios.min.js"></script>
+    <script>
+        var signup = function() {
+            axios.post('/user/signup', { name: "tud", password: "mypass", email: "tud@tud.fr"})
+            .then ((response) => {
+            console.log ("token du signup", response.data);
+            window.localStorage.setItem('token', response.data);
+        })
+    }
+
+    //On va appeler une autre route et on vérifie que le TOKEN est le bon
+
+    const bodyParameters = {
+        key: "yes"
+    };
+    var usord = function () {
+        var TOKEN = localStorage.getItem('token');
+
+        console.log("=>>", TOKEN)
+        config ={
+            headers: {
+                'Acess-Control-Allow-Headers' : 'x-access-token',
+                'x-access-token' : TOKEN,
+                'Authorization' : TOKEN
+            }
+        }
+
+        axios.get(
+            '/api/userOrders',
+            Object.assign({},bodyParameters, config)
+        ).then(console.log)
+        .catch(console.log)
+    }
+    </script>
+</head>
+<body>
+    <button onclick= "signup()">Signup</button>
+    <button onclick= "usord()">orderUsers</button>
+</body>
+</html>

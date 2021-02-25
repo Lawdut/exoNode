@@ -1,4 +1,6 @@
 const conn = require('./mysqlconfig.js');
+const bcrypt = require('bcrypt');
+const salt = bcrypt.genSaltSync(10);
 
 exports.getAll = function (table,callback){
 
@@ -28,6 +30,28 @@ exports.modif = function(table, id , article, callback) {
     console.log(sql);
     conn.query(sql,function(error){
         if( error ) {console.log(error);}
+        callback();
+    })
+}
+
+exports.connexion = function(table, data, callback) {
+    var sql = " SELECT * FROM " +table+" WHERE nom = "+"'"+data.nom+"'" ;
+    console.log(sql);
+    conn.query(sql,function(error, rows) {
+        if (error) {
+            console.log(error);
+        }
+        console.log(rows[0]);
+        callback(rows[0]);
+        })
+}
+
+exports.enregistrer = function(table, user, callback) {
+    hash = bcrypt.hashSync(user.mdp, salt);
+    var sql = "INSERT INTO "+ table + "(`id`, `nom`, `mdp`) VALUES(NULL,'"+user.nom+"','"+hash+"');";
+    conn.query(sql, function(error) {
+        if( error ) {console.log(error);
+        }
         callback();
     })
 }
