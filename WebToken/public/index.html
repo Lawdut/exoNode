@@ -8,8 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@0.20.0/dist/axios.min.js"></script>
     <script>
         var signup = function() {
-            axios.post('/user/signup', { name: "tud", password: "mypass", email: "tud@tud.fr", role:"moderateur"})
-            .then ((reponse) => {
+            axios.post('/user/signup', { name: "tud", password: "mypass", email: "tud@tud.fr"})
+            .then ((response) => {
             console.log ("token du signup", response.data);
             window.localStorage.setItem('token', response.data);
         })

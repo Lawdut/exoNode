@@ -27,7 +27,16 @@ app.get('/', (req, res) => {
 });
 
 var db = mongoose.connect('mongodb://localhost/afpauser');
+// Generation du TOKEN//
+/*en lisant la clé privée sous .env
+la clé est créée par => require('crypto').randomBytest(64).toString('hec');
+sous le shell node
+//créer un fichier .env et ajouter TOKEN_SECRET = le Token */
 
+function generateAcessToken(user) {
+    //expire après 5 min
+    return jwt.sign(user, process.env.TOKEN_SECRET, {expiresIn: '5m'});
+}
 function authenticateToken(req, res, next) {
 
     const token = req.headers['x-access-token'];
@@ -47,25 +56,18 @@ function authenticateToken(req, res, next) {
 
 }
 
-// Generation du TOKEN//
-/*en lisant la clé privée sous .env
-la clé est créée par => require('crypto').randomBytest(64).toString('hec');
-sous le shell node
-//créer un fichier .env et ajouter TOKEN_SECRET = le Token */
-
-function generateAcessToken(user) {
-    //expire après 5 min
-    return jwt.sign(user, process.env.TOKEN_SECRET, {expiresIn: '5mn'});
-}
 
 app.post('/user/signup', (req, res) => {
     User.findOne ({ email : req.body.email })
     .exec ((err, user) => {
         if (err) {
+            res.status(500).send({ message : err});
+        }
+        if (user) {
             res.status(400).send({message: "Failed ! Email is already in use!"});
         }else {
             var salt = bcrypt.genSaltSync(10);
-            var hash = bcryot.hashSync(req.body.password, salt);
+            var hash = bcrypt.hashSync(req.body.password, salt);
             var user = new User ({
                 name : req.body.name,
                 password : hash,
@@ -83,7 +85,7 @@ app.post('/user/signup', (req, res) => {
 //test du token
 app.get('/api/userOrders', authenticateToken, function (req, res) {
     console.log("OK TU PASSES !!");
-    res.render('ok');
+    res.send('ok');
 })
 
 app.listen(8092);
