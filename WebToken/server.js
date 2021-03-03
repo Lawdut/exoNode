@@ -82,6 +82,23 @@ app.post('/user/signup', (req, res) => {
     })//end exec
 })//end post
 
+app.post('/user/login', (req, res)=> {
+    console.log('route login');
+    User.findOne({ email: req.body.email })
+    .exec ((err, user) => {
+        if (err) { res.statusMessage(500).send({ message: err}); }
+
+        if (user) {
+            console.log(user);
+            const isValidPass = bcrypt.compareSync(req.body.password, user.password)
+            if (isValidPass) {
+                const token = generateAcessToken ({user : user })
+                res.status(200).send(token);
+            }
+        }
+    })
+})
+
 //test du token
 app.get('/api/userOrders', authenticateToken, function (req, res) {
     console.log("OK TU PASSES !!");

@@ -42,9 +42,6 @@ app.post('/insertAnimal', function(req,res) {
         
 })
 
-app.get('/modifAnimal', function (req, res){
-
-})
 
 app.listen(8095)
 console.log('démarré sur port 8095')
